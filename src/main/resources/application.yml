@@ -1,0 +1,19 @@
+logging:
+  file:
+    path: /var/log/
+    name: webdav.log
+#  level:
+#    net:
+#      sf:
+#        webdav: trace
+
+aliyundrive:
+  auth:
+    enable: true
+    user-name: admin
+    password: admin
+  work-dir: ./
+
+server:
+  tomcat:
+    connection-timeout: 1d

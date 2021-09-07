@@ -50,7 +50,7 @@ public abstract class AbstractMethod implements IMethodExecutor {
     private static final ThreadLocal<DateFormat> thLastmodifiedDateFormat = new ThreadLocal<DateFormat>();
     private static final ThreadLocal<DateFormat> thCreationDateFormat = new ThreadLocal<DateFormat>();
     private static final ThreadLocal<DateFormat> thLocalDateFormat = new ThreadLocal<DateFormat>();
-    
+
     /**
      * Array containing the safe characters set.
      */
@@ -72,7 +72,7 @@ public abstract class AbstractMethod implements IMethodExecutor {
      * 1123)
      */
     protected static final String LAST_MODIFIED_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss z";
-    
+
     protected static final String LOCAL_DATE_FORMAT = "dd/MM/yy' 'HH:mm:ss";
 
     static {
@@ -112,7 +112,7 @@ public abstract class AbstractMethod implements IMethodExecutor {
      */
     protected static final int TEMP_TIMEOUT = 10;
 
-    
+
     public static String lastModifiedDateFormat(final Date date) {
         DateFormat df = thLastmodifiedDateFormat.get();
         if( df == null ) {
@@ -280,10 +280,10 @@ public abstract class AbstractMethod implements IMethodExecutor {
         return (normalized);
 
     }
-    
+
     /**
      * Return the relative path associated with this servlet.
-     * 
+     *
      * @param request
      *      The servlet request we are processing
      */
@@ -316,7 +316,7 @@ public abstract class AbstractMethod implements IMethodExecutor {
     /**
      * creates the parent path from the given path by removing the last '/' and
      * everything after that
-     * 
+     *
      * @param path
      *      the path
      * @return parent path
@@ -331,7 +331,7 @@ public abstract class AbstractMethod implements IMethodExecutor {
 
     /**
      * removes a / at the end of the path string, if present
-     * 
+     *
      * @param path
      *      the path
      * @return the path without trailing /
@@ -361,7 +361,7 @@ public abstract class AbstractMethod implements IMethodExecutor {
 
     /**
      * reads the depth header from the request and returns it as a int
-     * 
+     *
      * @param req
      * @return the depth from the depth header
      */
@@ -380,7 +380,7 @@ public abstract class AbstractMethod implements IMethodExecutor {
 
     /**
      * URL rewriter.
-     * 
+     *
      * @param path
      *      Path which has to be rewiten
      * @return the rewritten path
@@ -391,7 +391,7 @@ public abstract class AbstractMethod implements IMethodExecutor {
 
     /**
      * Get the ETag associated with a file.
-     * 
+     *
      * @param StoredObject
      *      StoredObject to get resourceLength, lastModified and a hashCode of
      *      StoredObject
@@ -403,8 +403,11 @@ public abstract class AbstractMethod implements IMethodExecutor {
         String lastModified = "";
 
         if (so != null && so.isResource()) {
-            resourceLength = new Long(so.getResourceLength()).toString();
-            lastModified = new Long(so.getLastModified().getTime()).toString();
+            // resourceLength = new Long(so.getResourceLength()).toString();
+            resourceLength = Long.valueOf(so.getResourceLength()).toString();
+
+            // lastModified = new Long(so.getLastModified().getTime()).toString();
+            lastModified = Long.valueOf(so.getLastModified().getTime()).toString();
         }
 
         return "W/\"" + resourceLength + "-" + lastModified + "\"";
@@ -461,7 +464,7 @@ public abstract class AbstractMethod implements IMethodExecutor {
      * the If-Header to make sure the If-Header corresponds to the locked
      * resource. Returning true if no lock exists or the If-Header is
      * corresponding to the locked resource
-     * 
+     *
      * @param req
      *      Servlet request
      * @param resp
@@ -519,7 +522,7 @@ public abstract class AbstractMethod implements IMethodExecutor {
      * Send a multistatus element containing a complete error report to the
      * client. If the errorList contains only one error, send the error
      * directly without wrapping it in a multistatus message.
-     * 
+     *
      * @param req
      *      Servlet request
      * @param resp

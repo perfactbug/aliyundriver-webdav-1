@@ -100,7 +100,7 @@ public class DoDelete extends AbstractMethod {
 
     /**
      * deletes the recources at "path"
-     * 
+     *
      * @param transaction
      *      indicates that the method is within the scope of a WebDAV
      *      transaction
@@ -149,10 +149,10 @@ public class DoDelete extends AbstractMethod {
     }
 
     /**
-     * 
+     *
      * helper method of deleteResource() deletes the folder and all of its
      * contents
-     * 
+     *
      * @param transaction
      *      indicates that the method is within the scope of a WebDAV
      *      transaction
@@ -189,18 +189,16 @@ public class DoDelete extends AbstractMethod {
 
                 }
             } catch (AccessDeniedException e) {
-                errorList.put(path + children[i], new Integer(
-                        WebdavStatus.SC_FORBIDDEN));
+                // errorList.put(path + children[i], new Integer(WebdavStatus.SC_FORBIDDEN));
+                errorList.put(path + children[i], Integer.valueOf(WebdavStatus.SC_FORBIDDEN));
             } catch (ObjectNotFoundException e) {
-                errorList.put(path + children[i], new Integer(
-                        WebdavStatus.SC_NOT_FOUND));
+                // errorList.put(path + children[i], new Integer(WebdavStatus.SC_NOT_FOUND));
+                errorList.put(path + children[i], Integer.valueOf(WebdavStatus.SC_NOT_FOUND));
             } catch (WebdavException e) {
-                errorList.put(path + children[i], new Integer(
-                        WebdavStatus.SC_INTERNAL_SERVER_ERROR));
+                // errorList.put(path + children[i], new Integer(WebdavStatus.SC_INTERNAL_SERVER_ERROR));
+                errorList.put(path + children[i], Integer.valueOf(WebdavStatus.SC_INTERNAL_SERVER_ERROR));
             }
         }
         so = null;
-
     }
-
 }

@@ -99,8 +99,9 @@ public class DoLock extends AbstractMethod {
             if (_userAgent != null && _userAgent.indexOf("Darwin") != -1) {
                 _macLockRequest = true;
 
-                String timeString = new Long(System.currentTimeMillis())
-                        .toString();
+                // String timeString = new Long(System.currentTimeMillis()).toString();
+                String timeString = Long.valueOf(System.currentTimeMillis()).toString();
+
                 _lockOwner = _userAgent.concat(timeString);
             }
 
@@ -465,15 +466,17 @@ public class DoLock extends AbstractMethod {
             if (commaPos != -1) {
                 lockDurationStr = lockDurationStr.substring(0, commaPos);
             }
+
             if (lockDurationStr.startsWith("Second-")) {
-                lockDuration = new Integer(lockDurationStr.substring(7))
-                        .intValue();
+                // lockDuration = new Integer(lockDurationStr.substring(7)).intValue();
+                lockDuration = Integer.valueOf(lockDurationStr.substring(7)).intValue();
             } else {
                 if (lockDurationStr.equalsIgnoreCase("infinity")) {
                     lockDuration = MAX_TIMEOUT;
                 } else {
                     try {
-                        lockDuration = new Integer(lockDurationStr).intValue();
+                        // lockDuration = new Integer(lockDurationStr).intValue();
+                        lockDuration = Integer.valueOf(lockDurationStr).intValue();
                     } catch (NumberFormatException e) {
                         lockDuration = MAX_TIMEOUT;
                     }

@@ -91,7 +91,7 @@ public class DoCopy extends AbstractMethod {
 
     /**
      * Copy a resource.
-     * 
+     *
      * @param transaction
      *      indicates that the method is within the scope of a WebDAV
      *      transaction
@@ -218,7 +218,7 @@ public class DoCopy extends AbstractMethod {
      * preconditions must be handled by the caller. Standard status codes must
      * be handled by the caller. a multi status report in case of errors is
      * created here.
-     * 
+     *
      * @param transaction
      *      indicates that the method is within the scope of a WebDAV
      *      transaction
@@ -266,7 +266,7 @@ public class DoCopy extends AbstractMethod {
     /**
      * helper method of copy() recursively copies the FOLDER at source path to
      * destination path
-     * 
+     *
      * @param transaction
      *      indicates that the method is within the scope of a WebDAV
      *      transaction
@@ -328,17 +328,13 @@ public class DoCopy extends AbstractMethod {
                                 resp);
                     }
                 } catch (AccessDeniedException e) {
-                    errorList.put(destinationPath + children[i], new Integer(
-                            WebdavStatus.SC_FORBIDDEN));
+                    errorList.put(destinationPath + children[i], Integer.valueOf(WebdavStatus.SC_FORBIDDEN));
                 } catch (ObjectNotFoundException e) {
-                    errorList.put(destinationPath + children[i], new Integer(
-                            WebdavStatus.SC_NOT_FOUND));
+                    errorList.put(destinationPath + children[i], Integer.valueOf(WebdavStatus.SC_NOT_FOUND));
                 } catch (ObjectAlreadyExistsException e) {
-                    errorList.put(destinationPath + children[i], new Integer(
-                            WebdavStatus.SC_CONFLICT));
+                    errorList.put(destinationPath + children[i], Integer.valueOf(WebdavStatus.SC_CONFLICT));
                 } catch (WebdavException e) {
-                    errorList.put(destinationPath + children[i], new Integer(
-                            WebdavStatus.SC_INTERNAL_SERVER_ERROR));
+                    errorList.put(destinationPath + children[i], Integer.valueOf(WebdavStatus.SC_INTERNAL_SERVER_ERROR));
                 }
             }
         }

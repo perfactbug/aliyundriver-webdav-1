@@ -191,7 +191,7 @@ public class DoPropfind extends AbstractMethod {
 
     /**
      * goes recursive through all folders. used by propfind
-     * 
+     *
      * @param currentPath
      *      the current path
      * @param req
@@ -233,7 +233,7 @@ public class DoPropfind extends AbstractMethod {
 
     /**
      * Propfind helper method.
-     * 
+     *
      * @param req
      *      The servlet request
      * @param generatedXML
@@ -600,7 +600,7 @@ public class DoPropfind extends AbstractMethod {
             }
 
             int timeout = (int) (lo.getTimeoutMillis() / 1000);
-            String timeoutStr = new Integer(timeout).toString();
+            String timeoutStr = Integer.valueOf(timeout).toString();
             generatedXML.writeElement("DAV::timeout", XMLWriter.OPENING);
             generatedXML.writeText("Second-" + timeoutStr);
             generatedXML.writeElement("DAV::timeout", XMLWriter.CLOSING);

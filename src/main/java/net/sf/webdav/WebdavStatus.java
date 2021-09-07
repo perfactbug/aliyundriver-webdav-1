@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
  * Wraps the HttpServletResponse class to abstract the specific protocol used.
  * To support other protocols we would only need to modify this class and the
  * WebDavRetCode classes.
- * 
+ *
  * @author Marc Eaddy
  * @version 1.0, 16 Nov 1997
  */
@@ -239,14 +239,14 @@ public class WebdavStatus {
     /**
      * Returns the HTTP status text for the HTTP or WebDav status code specified
      * by looking it up in the static mapping. This is a static function.
-     * 
+     *
      * @param nHttpStatusCode
      *      [IN] HTTP or WebDAV status code
      * @return A string with a short descriptive phrase for the HTTP status code
      *  (e.g., "OK").
      */
     public static String getStatusText(int nHttpStatusCode) {
-        Integer intKey = new Integer(nHttpStatusCode);
+        Integer intKey = Integer.valueOf(nHttpStatusCode);
 
         if (!_mapStatusCodes.containsKey(intKey)) {
             return "";
@@ -260,14 +260,14 @@ public class WebdavStatus {
     /**
      * Adds a new status code -> status text mapping. This is a static method
      * because the mapping is a static variable.
-     * 
+     *
      * @param nKey
      *      [IN] HTTP or WebDAV status code
      * @param strVal
      *      [IN] HTTP status text
      */
     private static void addStatusCodeMap(int nKey, String strVal) {
-        _mapStatusCodes.put(new Integer(nKey), strVal);
+        _mapStatusCodes.put(Integer.valueOf(nKey), strVal);
     }
 
 };
