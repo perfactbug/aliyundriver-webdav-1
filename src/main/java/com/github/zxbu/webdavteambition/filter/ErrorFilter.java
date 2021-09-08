@@ -22,9 +22,13 @@ public class ErrorFilter extends OncePerRequestFilter {
     private static String readErrorPage() {
         try {
             ClassPathResource classPathResource = new ClassPathResource("error.xml");
+
             InputStream inputStream = classPathResource.getInputStream();
+
             byte[] buffer = new byte[(int) classPathResource.contentLength()];
+
             IOUtils.readFully(inputStream, buffer);
+
             return new String(buffer, StandardCharsets.UTF_8);
         } catch (IOException e) {
             return "";
@@ -37,21 +41,29 @@ public class ErrorFilter extends OncePerRequestFilter {
 
         try {
             filterChain.doFilter(httpServletRequest, wrapperResponse);
+
             if (wrapperResponse.hasErrorToSend()) {
                 int status = wrapperResponse.getStatus();
+
                 if (status == 401) {
 //                    httpServletResponse.addHeader("WWW-Authenticate", "Digest realm=\"iptel.org\", qop=\"auth,auth-int\",\n" +
 //                            "nonce=\"dcd98b7102dd2f0e8b11d0f600bfb0c093\", opaque=\"\", algorithm=MD5");
 //
                 }
+
                 httpServletResponse.setStatus(status);
+
                 String message = wrapperResponse.getMessage();
+
                 if (message == null) {
                     message = WebdavStatus.getStatusText(status);
                 }
+
                 String errorXml = errorPage.replace("{{code}}", status + "").replace("{{message}}", message);
+
                 httpServletResponse.getWriter().write(errorXml);
             }
+
             httpServletResponse.flushBuffer();
         } catch (Throwable t) {
             httpServletResponse.setStatus(500);

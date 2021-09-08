@@ -225,11 +225,11 @@ public class WebdavStatus {
         addStatusCodeMap(SC_PRECONDITION_FAILED, "Precondition Failed");
         addStatusCodeMap(SC_REQUEST_TOO_LONG, "Request Too Long");
         addStatusCodeMap(SC_UNSUPPORTED_MEDIA_TYPE, "Unsupported Media Type");
+
         // WebDav Status Codes
         addStatusCodeMap(SC_MULTI_STATUS, "Multi-Status");
         addStatusCodeMap(SC_UNPROCESSABLE_ENTITY, "Unprocessable Entity");
-        addStatusCodeMap(SC_INSUFFICIENT_SPACE_ON_RESOURCE,
-                "Insufficient Space On Resource");
+        addStatusCodeMap(SC_INSUFFICIENT_SPACE_ON_RESOURCE, "Insufficient Space On Resource");
         addStatusCodeMap(SC_METHOD_FAILURE, "Method Failure");
         addStatusCodeMap(SC_LOCKED, "Locked");
     }
@@ -251,7 +251,7 @@ public class WebdavStatus {
         if (!_mapStatusCodes.containsKey(intKey)) {
             return "";
         } else {
-            return (String) _mapStatusCodes.get(intKey);
+            return _mapStatusCodes.get(intKey);
         }
     }
 
@@ -269,5 +269,4 @@ public class WebdavStatus {
     private static void addStatusCodeMap(int nKey, String strVal) {
         _mapStatusCodes.put(Integer.valueOf(nKey), strVal);
     }
-
 };

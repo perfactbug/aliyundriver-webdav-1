@@ -37,31 +37,33 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 
 public class DoGet extends DoHead {
 
-    private static org.slf4j.Logger LOG = org.slf4j.LoggerFactory
-            .getLogger(DoGet.class);
+    private static org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(DoGet.class);
 
-    public DoGet(IWebdavStore store, String dftIndexFile, String insteadOf404,
-            ResourceLocks resourceLocks, IMimeTyper mimeTyper,
-            int contentLengthHeader) {
-        super(store, dftIndexFile, insteadOf404, resourceLocks, mimeTyper,
-                contentLengthHeader);
-
+    public DoGet(
+            IWebdavStore store,
+            String dftIndexFile,
+            String insteadOf404,
+            ResourceLocks resourceLocks,
+            IMimeTyper mimeTyper,
+            int contentLengthHeader
+    ) {
+        super(store, dftIndexFile, insteadOf404, resourceLocks, mimeTyper, contentLengthHeader);
     }
 
-    protected void doBody(ITransaction transaction, HttpServletResponse resp,
-            String path) {
-
+    protected void doBody(ITransaction transaction, HttpServletResponse resp, String path) {
         try {
             StoredObject so = _store.getStoredObject(transaction, path);
+
             if (so.isNullResource()) {
-                String methodsAllowed = DeterminableMethod
-                        .determineMethodsAllowed(so);
+                String methodsAllowed = DeterminableMethod.determineMethodsAllowed(so);
                 resp.addHeader("Allow", methodsAllowed);
                 resp.sendError(WebdavStatus.SC_METHOD_NOT_ALLOWED);
                 return;
             }
+
             OutputStream out = resp.getOutputStream();
             InputStream in = _store.getResourceContent(transaction, path);
+
             try {
                 if (in != null) {
                     LOG.debug("开始 {}, ", path);
@@ -94,19 +96,20 @@ public class DoGet extends DoHead {
         }
     }
 
-    protected void folderBody(ITransaction transaction, String path,
-            HttpServletResponse resp, HttpServletRequest req)
-            throws IOException {
+    protected void folderBody(
+            ITransaction transaction,
+            String path,
+            HttpServletResponse resp,
+            HttpServletRequest req
+    ) throws IOException {
 
         StoredObject so = _store.getStoredObject(transaction, path);
-        if (so == null) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, req
-                    .getRequestURI());
-        } else {
 
+        if (so == null) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, req.getRequestURI());
+        } else {
             if (so.isNullResource()) {
-                String methodsAllowed = DeterminableMethod
-                        .determineMethodsAllowed(so);
+                String methodsAllowed = DeterminableMethod.determineMethodsAllowed(so);
                 resp.addHeader("Allow", methodsAllowed);
                 resp.sendError(WebdavStatus.SC_METHOD_NOT_ALLOWED);
                 return;
@@ -116,15 +119,21 @@ public class DoGet extends DoHead {
                 // TODO some folder response (for browsers, DAV tools
                 // use propfind) in html?
                 Locale locale = req.getLocale();
+
                 DateFormat shortDF= getDateTimeFormat(req.getLocale());
+
                 resp.setContentType("text/html");
                 resp.setCharacterEncoding("UTF8");
                 OutputStream out = resp.getOutputStream();
+
                 String[] children = _store.getChildrenNames(transaction, path);
+
                 // Make sure it's not null
                 children = children == null ? new String[] {} : children;
+
                 // Sort by name
                 Arrays.sort(children);
+
                 StringBuilder childrenTemp = new StringBuilder();
                 childrenTemp.append("<html><head><title>Content of folder");
                 childrenTemp.append(path);
@@ -137,67 +146,67 @@ public class DoGet extends DoHead {
                 childrenTemp.append("<tr><th>Name</th><th>Size</th><th>Created</th><th>Modified</th></tr>");
                 childrenTemp.append("<tr>");
                 childrenTemp.append("<td colspan=\"4\"><a href=\"../\">Parent</a></td></tr>");
+
                 boolean isEven= false;
-                for (String child : children)
-                {
+
+                for (String child : children) {
                     isEven= !isEven;
+
                     childrenTemp.append("<tr class=\"");
                     childrenTemp.append(isEven ? "even" : "odd");
                     childrenTemp.append("\">");
                     childrenTemp.append("<td>");
                     childrenTemp.append("<a href=\"");
+
                     childrenTemp.append(URLEncoder.encode(child, "utf-8"));
+
                     StoredObject obj= _store.getStoredObject(transaction, path+"/"+child);
-                    if (obj == null)
-                    {
+
+                    if (obj == null) {
                         LOG.error("Should not return null for "+path+"/"+child);
                     }
-                    if (obj != null && obj.isFolder())
-                    {
+
+                    if (obj != null && obj.isFolder()) {
                         childrenTemp.append("/");
                     }
+
                     childrenTemp.append("\">");
                     childrenTemp.append(child);
                     childrenTemp.append("</a></td>");
-                    if (obj != null && obj.isFolder())
-                    {
+
+                    if (obj != null && obj.isFolder()) {
                         childrenTemp.append("<td>Folder</td>");
-                    }
-                    else
-                    {
+                    } else {
                         childrenTemp.append("<td>");
-                        if (obj != null )
-                        {
+
+                        if (obj != null ) {
                             childrenTemp.append(obj.getResourceLength());
-                        }
-                        else
-                        {
+                        } else {
                             childrenTemp.append("Unknown");
                         }
+
                         childrenTemp.append(" Bytes</td>");
                     }
-                    if (obj != null && obj.getCreationDate() != null)
-                    {
+
+                    if (obj != null && obj.getCreationDate() != null) {
                         childrenTemp.append("<td>");
                         childrenTemp.append(shortDF.format(obj.getCreationDate()));
                         childrenTemp.append("</td>");
-                    }
-                    else
-                    {
+                    } else {
                         childrenTemp.append("<td></td>");
                     }
-                    if (obj != null  && obj.getLastModified() != null)
-                    {
+
+                    if (obj != null  && obj.getLastModified() != null) {
                         childrenTemp.append("<td>");
                         childrenTemp.append(shortDF.format(obj.getLastModified()));
                         childrenTemp.append("</td>");
-                    }
-                    else
-                    {
+                    } else {
                         childrenTemp.append("<td></td>");
                     }
+
                     childrenTemp.append("</tr>");
                 }
+
                 childrenTemp.append("</table>");
                 childrenTemp.append(getFooter(transaction, path, resp, req));
                 childrenTemp.append("</body></html>");
@@ -209,7 +218,7 @@ public class DoGet extends DoHead {
     /**
      * Return the CSS styles used to display the HTML representation
      * of the webdav content.
-     * 
+     *
      * @return
      */
     protected String getCSS()
@@ -271,7 +280,7 @@ public class DoGet extends DoHead {
 
     /**
      * Return the header to be displayed in front of the folder content
-     * 
+     *
      * @param transaction
      * @param path
      * @param resp
@@ -286,7 +295,7 @@ public class DoGet extends DoHead {
 
     /**
      * Return the footer to be displayed after the folder content
-     * 
+     *
      * @param transaction
      * @param path
      * @param resp

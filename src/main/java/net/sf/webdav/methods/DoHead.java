@@ -41,12 +41,16 @@ public class DoHead extends AbstractMethod {
     protected IMimeTyper _mimeTyper;
     protected int _contentLength;
 
-    private static org.slf4j.Logger LOG = org.slf4j.LoggerFactory
-            .getLogger(DoHead.class);
+    private static org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(DoHead.class);
 
-    public DoHead(IWebdavStore store, String dftIndexFile, String insteadOf404,
-            ResourceLocks resourceLocks, IMimeTyper mimeTyper,
-            int contentLengthHeader) {
+    public DoHead(
+            IWebdavStore store,
+            String dftIndexFile,
+            String insteadOf404,
+            ResourceLocks resourceLocks,
+            IMimeTyper mimeTyper,
+            int contentLengthHeader
+    ) {
         _store = store;
         _dftIndexFile = dftIndexFile;
         _insteadOf404 = insteadOf404;
@@ -63,18 +67,22 @@ public class DoHead extends AbstractMethod {
         boolean bUriExists = false;
 
         String path = getRelativePath(req);
+
         LOG.trace("-- " + this.getClass().getName());
 
         StoredObject so;
+
         try {
             so = _store.getStoredObject(transaction, path);
+
             if (so == null) {
                 if (this._insteadOf404 != null && !_insteadOf404.trim().equals("")) {
                     path = this._insteadOf404;
                     so = _store.getStoredObject(transaction, this._insteadOf404);
                 }
-            } else
+            } else {
                 bUriExists = true;
+            }
         } catch (AccessDeniedException e) {
             resp.sendError(WebdavStatus.SC_FORBIDDEN);
             return;
@@ -89,26 +97,21 @@ public class DoHead extends AbstractMethod {
                     return;
                 }
             } else if (so.isNullResource()) {
-                String methodsAllowed = DeterminableMethod
-                        .determineMethodsAllowed(so);
+                String methodsAllowed = DeterminableMethod.determineMethodsAllowed(so);
                 resp.addHeader("Allow", methodsAllowed);
                 resp.sendError(WebdavStatus.SC_METHOD_NOT_ALLOWED);
                 return;
             }
 
-            String tempLockOwner = "doGet" + System.currentTimeMillis()
-                    + req.toString();
+            String tempLockOwner = "doGet" + System.currentTimeMillis() + req.toString();
 
-            if (_resourceLocks.lock(transaction, path, tempLockOwner, false, 0,
-                    TEMP_TIMEOUT, TEMPORARY)) {
+            if (_resourceLocks.lock(transaction, path, tempLockOwner, false, 0, TEMP_TIMEOUT, TEMPORARY)) {
                 try {
-
                     String eTagMatch = req.getHeader("If-None-Match");
-                    if (eTagMatch != null) {
-                        if (eTagMatch.equals(getETag(so))) {
-                            resp.setStatus(WebdavStatus.SC_NOT_MODIFIED);
-                            return;
-                        }
+
+                    if (eTagMatch != null && eTagMatch.equals(getETag(so))) {
+                        resp.setStatus(WebdavStatus.SC_NOT_MODIFIED);
+                        return;
                     }
 
                     if (so.isResource()) {

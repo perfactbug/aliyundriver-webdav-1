@@ -28,30 +28,38 @@ public class VirtualTFileService {
 
     public void updateLength(String parentId, String fileId, long length) {
         Map<String, TFile> tFileMap = virtualTFileMap.get(parentId);
+
         if (tFileMap == null) {
             return;
         }
+
         TFile tFile = tFileMap.get(fileId);
+
         if (tFile == null) {
             return;
         }
+
         tFile.setSize(tFile.getSize() + length);
         tFile.setUpdated_at(new Date());
     }
 
     public void remove(String parentId, String fileId) {
         Map<String, TFile> tFileMap = virtualTFileMap.get(parentId);
+
         if (tFileMap == null) {
             return;
         }
+
         tFileMap.remove(fileId);
     }
 
     public Collection<TFile> list(String parentId) {
         Map<String, TFile> tFileMap = virtualTFileMap.get(parentId);
+
         if (tFileMap == null) {
             return Collections.emptyList();
         }
+
         return tFileMap.values();
     }
 
