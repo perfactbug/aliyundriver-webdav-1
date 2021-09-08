@@ -3,26 +3,32 @@ plugins {
     id 'idea'
     id 'org.springframework.boot' version '2.5.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+
+    // Spring Native Build
+    id 'org.springframework.experimental.aot' version '0.10.3'
+    id 'org.graalvm.buildtools.native' version '0.9.3'
 }
 
 idea {
     module {
         inheritOutputDirs = false
-        outputDir = compileJava.destinationDir
-        testOutputDir = compileJava.destinationDir
+        outputDir = file("build/classes/main/")
+        testOutputDir = file('build/classes/java/test')
+        downloadJavadoc = false
+        downloadSources = true
     }
 }
 
 group = 'com.github.zxbu'
 version = '2.4.0'
-sourceCompatibility = '16'
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
 }
-
 
 repositories {
     maven {
@@ -54,4 +60,21 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+// Spring Native Build
+
+bootBuildImage {
+    builder = 'paketobuildpacks/builder:tiny'
+    environment = [
+            'BP_NATIVE_IMAGE': 'true'
+    ]
+}
+
+nativeBuild {
+    classpath processAotResources.outputs, compileAotJava.outputs
+}
+
+nativeTest {
+    classpath processAotTestResources.outputs, compileAotTestJava.outputs
 }
